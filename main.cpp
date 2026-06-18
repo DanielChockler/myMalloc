@@ -74,7 +74,7 @@ private:
       leftoverSpace = smallestBlock->length - size - sizeof(memBlock);
     }
     
-    std::byte* newBlockLocation = reinterpret_cast<std::byte*>(smallestBlock + sizeof(memBlock) + size);
+    std::byte* newBlockLocation = reinterpret_cast<std::byte*>(smallestBlock) + sizeof(memBlock) + size;
     memBlock* newBlock = reinterpret_cast<memBlock*>(newBlockLocation);
     newBlock->marker = BLOCKMARKER;
     newBlock->inUse = false;
@@ -93,7 +93,7 @@ private:
 
 public:
   explicit Allocator(size_t capacity) : m_capacity(capacity) {
-    if (capacity > sizeof(memBlock)) throw std::bad_alloc();
+    if (capacity <= sizeof(memBlock)) throw std::bad_alloc();
 
     heapStart = reinterpret_cast<std::byte*>(sbrk(0));
     sbrk(capacity);
