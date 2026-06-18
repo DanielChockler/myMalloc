@@ -19,7 +19,7 @@ private:
   size_t m_capacity;
   std::byte* heapStart;
   std::byte* heapEnd;
-  bool lock;
+  bool lock {false};
   uint32_t blockNum {0};
   uint16_t pageNum {0};
   
@@ -105,7 +105,7 @@ private:
     memBlock* prevUsedBlock = findPrevUsedBlock(lastBlock);
 
     if (!prevUsedBlock) {
-      if (prevUsedBlock->length > m_capacity) prevUsedBlock->length = m_capacity;
+      if (lastBlock->length > m_capacity) lastBlock->length = m_capacity;
       prevUsedBlock = lastBlock;
     }
 
@@ -165,7 +165,7 @@ public:
   }
 
   void deallocate(std::byte* ptr) {
-    if (!ptr) throw std::bad_alloc();
+    if (!ptr) return;
     while (lock) sleep(1);
 
     lock = true;
