@@ -23,7 +23,7 @@ void callTest(std::function<void()> testFunction, const std::string& msg) {
 
 void testBasicMalloc() {
   Allocator allocator(4096);
-  std::byte* ptr = allocator.allocate(1);
+  std::byte* ptr = allocator.allocate(128);
   assert(ptr != nullptr);
 
   memBlock* blockHeader = reinterpret_cast<memBlock*>(ptr - sizeof(memBlock));

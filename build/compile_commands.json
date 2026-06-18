@@ -1,0 +1,26 @@
+[
+{
+  "directory": "/Users/daniel/Documents/myMalloc/build/src",
+  "command": "/usr/bin/c++  -I/Users/daniel/Documents/myMalloc/src/allocator -std=gnu++17 -arch arm64 -o CMakeFiles/myMalloc.dir/main.cpp.o -c /Users/daniel/Documents/myMalloc/src/main.cpp",
+  "file": "/Users/daniel/Documents/myMalloc/src/main.cpp",
+  "output": "src/CMakeFiles/myMalloc.dir/main.cpp.o"
+},
+{
+  "directory": "/Users/daniel/Documents/myMalloc/build/src",
+  "command": "/usr/bin/c++  -I/Users/daniel/Documents/myMalloc/src/allocator -std=gnu++17 -arch arm64 -o CMakeFiles/myMalloc.dir/Allocator/Allocator.cpp.o -c /Users/daniel/Documents/myMalloc/src/Allocator/Allocator.cpp",
+  "file": "/Users/daniel/Documents/myMalloc/src/Allocator/Allocator.cpp",
+  "output": "src/CMakeFiles/myMalloc.dir/Allocator/Allocator.cpp.o"
+},
+{
+  "directory": "/Users/daniel/Documents/myMalloc/build/tests",
+  "command": "/usr/bin/c++  -I/Users/daniel/Documents/myMalloc/src/allocator -std=gnu++17 -arch arm64 -o CMakeFiles/run_tests.dir/tests.cpp.o -c /Users/daniel/Documents/myMalloc/tests/tests.cpp",
+  "file": "/Users/daniel/Documents/myMalloc/tests/tests.cpp",
+  "output": "tests/CMakeFiles/run_tests.dir/tests.cpp.o"
+},
+{
+  "directory": "/Users/daniel/Documents/myMalloc/build/tests",
+  "command": "/usr/bin/c++  -I/Users/daniel/Documents/myMalloc/src/allocator -std=gnu++17 -arch arm64 -o CMakeFiles/run_tests.dir/__/src/allocator/allocator.cpp.o -c /Users/daniel/Documents/myMalloc/src/allocator/allocator.cpp",
+  "file": "/Users/daniel/Documents/myMalloc/src/allocator/allocator.cpp",
+  "output": "tests/CMakeFiles/run_tests.dir/__/src/allocator/allocator.cpp.o"
+}
+]

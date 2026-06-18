@@ -1,0 +1,8 @@
+/Users/daniel/Documents/myMalloc/build/CMakeFiles/edit_cache.dir
+/Users/daniel/Documents/myMalloc/build/CMakeFiles/rebuild_cache.dir
+/Users/daniel/Documents/myMalloc/build/src/CMakeFiles/myMalloc.dir
+/Users/daniel/Documents/myMalloc/build/src/CMakeFiles/edit_cache.dir
+/Users/daniel/Documents/myMalloc/build/src/CMakeFiles/rebuild_cache.dir
+/Users/daniel/Documents/myMalloc/build/tests/CMakeFiles/run_tests.dir
+/Users/daniel/Documents/myMalloc/build/tests/CMakeFiles/edit_cache.dir
+/Users/daniel/Documents/myMalloc/build/tests/CMakeFiles/rebuild_cache.dir
