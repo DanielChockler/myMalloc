@@ -90,6 +90,43 @@ private:
     
     return smallestBlock;
   }
+  
+  memBlock* findPrevUsedBlock(memBlock* block) {
+    while (block->prev) {
+      block = block->prev;
+      if (block->inUse) return block;
+    }
+
+    return nullptr;
+  }
+
+  void reduceSizeIfPossible() {
+    memBlock* lastBlock = findLastBlock();
+    memBlock* prevUsedBlock = findPrevUsedBlock(lastBlock);
+
+    if (!prevUsedBlock) {
+      if (prevUsedBlock->length > m_capacity) prevUsedBlock->length = m_capacity;
+      prevUsedBlock = lastBlock;
+    }
+
+    std::byte* newHeapEnd = reinterpret_cast<std::byte*>(prevUsedBlock) + sizeof(memBlock) + prevUsedBlock->length;
+    
+    while (newHeapEnd < heapEnd - m_capacity) {
+      sbrk(-m_capacity);
+      heapEnd = reinterpret_cast<std::byte*>(sbrk(0));
+      --pageNum;
+    }
+
+    if (heapEnd - newHeapEnd > sizeof(memBlock) + 1) {
+      memBlock* newLastUnusedBlock = reinterpret_cast<memBlock*>(newHeapEnd);
+      newLastUnusedBlock->marker = BLOCKMARKER;
+      newLastUnusedBlock->inUse = false;
+      newLastUnusedBlock->prev = prevUsedBlock;
+      newLastUnusedBlock->next = nullptr;
+      newLastUnusedBlock->length = heapEnd - newHeapEnd - sizeof(memBlock);
+      prevUsedBlock->next = newLastUnusedBlock;
+    }
+  }
 
 public:
   explicit Allocator(size_t capacity) : m_capacity(capacity) {
@@ -127,13 +164,13 @@ public:
     return reinterpret_cast<std::byte*>(block) + sizeof(memBlock);
   }
 
-  bool deallocate(std::byte* ptr) {
-    if (!ptr) return false;
+  void deallocate(std::byte* ptr) {
+    if (!ptr) throw std::bad_alloc();
     while (lock) sleep(1);
 
     lock = true;
     memBlock* block = reinterpret_cast<memBlock*>(ptr - sizeof(memBlock));
-    if (block->marker != BLOCKMARKER) return false;
+    if (block->marker != BLOCKMARKER) throw std::bad_alloc();
 
     block->inUse = false;
     
@@ -152,8 +189,8 @@ public:
       if (prevUnusedBlock->next) prevUnusedBlock->next->prev = prevUnusedBlock;
       --blockNum;
     }
-
+    
+    reduceSizeIfPossible();
     lock = false;
-    return true;
   }
 };
