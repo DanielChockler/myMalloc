@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <new>
 #include <unistd.h>
 
@@ -126,4 +127,33 @@ public:
     return reinterpret_cast<std::byte*>(block) + sizeof(memBlock);
   }
 
+  bool deallocate(std::byte* ptr) {
+    if (!ptr) return false;
+    while (lock) sleep(1);
+
+    lock = true;
+    memBlock* block = reinterpret_cast<memBlock*>(ptr - sizeof(memBlock));
+    if (block->marker != BLOCKMARKER) return false;
+
+    block->inUse = false;
+    
+    if (block->next && !(block->next->inUse)){
+      memBlock* nextUnusedBlock = block->next;
+      block->length += sizeof(memBlock) + nextUnusedBlock->length;
+      block->next = nextUnusedBlock->next;
+      if (block->next) block->next->prev = block;
+      --blockNum;
+    }
+
+    if (block->prev && !(block->prev->inUse)) {
+      memBlock* prevUnusedBlock = block->prev;
+      prevUnusedBlock->length += sizeof(memBlock) + block->length;
+      prevUnusedBlock->next = block->next;
+      if (prevUnusedBlock->next) prevUnusedBlock->next->prev = prevUnusedBlock;
+      --blockNum;
+    }
+
+    lock = false;
+    return true;
+  }
 };
