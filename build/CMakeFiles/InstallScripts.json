@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/Users/daniel/Documents/myMalloc/build/cmake_install.cmake",
-		"/Users/daniel/Documents/myMalloc/build/src/cmake_install.cmake",
-		"/Users/daniel/Documents/myMalloc/build/tests/cmake_install.cmake"
-	],
-	"Parallel" : false
-}
