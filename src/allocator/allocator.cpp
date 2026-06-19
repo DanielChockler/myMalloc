@@ -51,7 +51,7 @@ memBlock* Allocator::allocateBestFit(size_t size) {
   if (smallestBlock->next && leftoverSpace < 1) return smallestBlock; // Smallest block not at end and too small to split
 
   while (leftoverSpace < 1) {  // Must have at least 1 byte space to allocate something in a new block
-      sbrk(m_capacity);
+    sbrk(m_capacity);
     smallestBlock->length += m_capacity;
     ++pageNum;
     leftoverSpace = smallestBlock->length - size - sizeof(memBlock);
