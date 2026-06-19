@@ -6,7 +6,7 @@
 
 const int BLOCKMARKER {0xBEEF};
 
-struct memBlock {
+struct alignas(16) memBlock {
   uint32_t marker;
   memBlock* prev;
   bool inUse;

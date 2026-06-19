@@ -1,5 +1,6 @@
 #include <atomic>
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <new>
 #include <unistd.h>
@@ -112,6 +113,11 @@ void Allocator::reduceSizeIfPossible() {
 
 Allocator::Allocator(size_t capacity) : m_capacity(capacity) {
   if (capacity <= sizeof(memBlock)) throw std::bad_alloc();
+  
+  // Ensure heap start is alligned to 16 bytes
+  std::uintptr_t initial = reinterpret_cast<std::uintptr_t>(sbrk(0));
+  std::uintptr_t alligned = (initial + 15) & ~(15);
+  sbrk(alligned - initial);
 
   heapStart = reinterpret_cast<std::byte*>(sbrk(0));
   sbrk(capacity);
@@ -130,10 +136,11 @@ Allocator::Allocator(size_t capacity) : m_capacity(capacity) {
 
 std::byte* Allocator::allocate(size_t size) {
   bool expected {false};
+  size_t allignedSize = (size + 15) & ~(15); // align to 16 bytes
 
   while (!lock.compare_exchange_weak(expected, true, std::memory_order_acquire)) expected = false;
 
-  memBlock* block = allocateBestFit(size);
+  memBlock* block = allocateBestFit(allignedSize);
   
   lock.store(false, std::memory_order_release);
 
