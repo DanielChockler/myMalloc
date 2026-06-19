@@ -116,8 +116,8 @@ Allocator::Allocator(size_t capacity) : m_capacity(capacity) {
   
   // Ensure heap start is alligned to 16 bytes
   std::uintptr_t initial = reinterpret_cast<std::uintptr_t>(sbrk(0));
-  std::uintptr_t alligned = (initial + 15) & ~(15);
-  sbrk(alligned - initial);
+  std::uintptr_t aligned = (initial + 15) & ~(15);
+  sbrk(aligned - initial);
 
   heapStart = reinterpret_cast<std::byte*>(sbrk(0));
   sbrk(capacity);
@@ -136,11 +136,11 @@ Allocator::Allocator(size_t capacity) : m_capacity(capacity) {
 
 std::byte* Allocator::allocate(size_t size) {
   bool expected {false};
-  size_t allignedSize = (size + 15) & ~(15); // align to 16 bytes
+  size_t alignedSize = (size + 15) & ~(15); // align to 16 bytes
 
   while (!lock.compare_exchange_weak(expected, true, std::memory_order_acquire)) expected = false;
 
-  memBlock* block = allocateBestFit(allignedSize);
+  memBlock* block = allocateBestFit(alignedSize);
   
   lock.store(false, std::memory_order_release);
 
