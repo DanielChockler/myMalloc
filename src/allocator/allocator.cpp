@@ -149,9 +149,10 @@ std::byte* Allocator::allocate(size_t size) {
 
 void Allocator::deallocate(std::byte* ptr) {
   if (!ptr) return;
-  while (lock) sleep(1);
 
-  lock = true;
+  bool expected = false;
+  while (!lock.compare_exchange_weak(expected, true, std::memory_order_acquire)) expected = false;
+  
   memBlock* block = reinterpret_cast<memBlock*>(ptr - sizeof(memBlock));
   if (block->marker != BLOCKMARKER) throw std::bad_alloc();
 
@@ -174,5 +175,5 @@ void Allocator::deallocate(std::byte* ptr) {
   }
   
   reduceSizeIfPossible();
-  lock = false;
+  lock.store(false, std::memory_order_release); 
 }
