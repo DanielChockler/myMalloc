@@ -61,4 +61,3 @@ Runs each test in a forked child process, so a crash or signal in one test is ca
 
 - The free list scan is O(n), which is acceptable for a single-threaded allocator with a relatively small number of live block. A segregated free list keyed by size class or a sorted tree of free blocks would be more time efficient
 - `sbrk` is deprecated in POSIX 2018. `mmap` would be the modern, albeit more complex, replacement.
-```
