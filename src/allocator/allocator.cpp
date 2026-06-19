@@ -1,5 +1,5 @@
+#include <atomic>
 #include <cstddef>
-#include <cstdint>
 #include <cstring>
 #include <new>
 #include <unistd.h>
@@ -129,12 +129,13 @@ Allocator::Allocator(size_t capacity) : m_capacity(capacity) {
 }
 
 std::byte* Allocator::allocate(size_t size) {
-  while (lock) sleep(1);
-  lock = true;
+  bool expected {false};
+
+  while (!lock.compare_exchange_weak(expected, true, std::memory_order_acquire)) expected = false;
 
   memBlock* block = allocateBestFit(size);
   
-  lock = false;
+  lock.store(false, std::memory_order_release);
 
   return reinterpret_cast<std::byte*>(block) + sizeof(memBlock);
 }

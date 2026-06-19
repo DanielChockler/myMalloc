@@ -1,7 +1,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <new>
+#include <atomic>
 #include <unistd.h>
 
 const int BLOCKMARKER {0xBEEF};
@@ -19,7 +19,7 @@ private:
   size_t m_capacity;
   std::byte* heapStart;
   std::byte* heapEnd;
-  bool lock {false};
+  std::atomic<bool> lock {false};
   uint32_t blockNum {0};
   uint16_t pageNum {0};
   
