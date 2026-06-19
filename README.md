@@ -32,4 +32,33 @@ Each block is preceded by a 32-byte header, `memBlock`. `sizeof(memBlock)` == 32
 
 Fields are ordered largest to smallest to minimise the amount of padding between each field. `alignas(16)` ensures that every header and, so every pointer is 16-byte aligned.
 
+## Design decisions
 
+**Best-fit**
+Best-fit reduces fragmentation at the cost of a full scan of the free-list per allocation which is an O(n) operation. A production allocator would use segregated free-lists that are separated by size class to get O(1) amortised allocation.
+
+**`sbrk` over `mmap`**
+`sbrk` gives a single contiguous heap, which helps keep the implementation simple, which is good for a learning exercise such as this. The tradeoff is that `sbrk` is not thread-safe at the OS level if anything else in the process calls `malloc`. A production allocator would likely use `mmap(MAP_ANONYMOUS)`.
+
+## Building
+
+```bash
+git clone "https://github.com/DanielChockler/myMalloc.git"
+mkdir build && cd build
+cmake --build .
+```
+
+## Testing
+
+```bash
+cd build
+./tests/run_tests
+```
+
+Runs each test in a forked child process, so a crash or signal in one test is caught and reported without crashing the entire test suite.
+
+## Limitations and improvements
+
+- The free list scan is O(n), which is acceptable for a single-threaded allocator with a relatively small number of live block. A segregated free list keyed by size class or a sorted tree of free blocks would be more time efficient
+- `sbrk` is deprecated in POSIX 2018. `mmap` would be the modern, albeit more complex, replacement.
+```
