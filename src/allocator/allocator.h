@@ -7,11 +7,11 @@
 const int BLOCKMARKER {0xBEEF};
 
 struct alignas(16) memBlock {
-  uint32_t marker;
   memBlock* prev;
-  bool inUse;
-  size_t length;
   memBlock* next;
+  size_t length;
+  uint32_t marker;
+  bool inUse;
 };
 
 class Allocator {
